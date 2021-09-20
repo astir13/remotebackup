@@ -1,0 +1,56 @@
+#!/bin/bash
+
+if [[ $# -ne 3 ]]; then
+  echo "usage $0 <number> <MB limit> <directory>" 
+  echo "  where directory is used to determine the oldest files in that directory to be deleted"
+  echo "  in case the disk usage of the files in directory is above MB limit, number of files"
+  echo "  will be deleted"
+  exit 1
+fi
+
+# first we check for hanging jobs from earlier cron call
+# this can be seen in a lockfile existing with $lockfilename
+lockfile="/tmp/deloldest.lock"
+echo checking for lockfiles: ${lockfile}
+if [[ -e ${lockfile} ]]; then
+  echo "found lockfile with pid"
+  cat ${lockfile}
+  echo "exiting ..."
+  exit 1
+else
+  echo "no lockfile found: good"
+  echo $$ > ${lockfile}
+fi
+
+function rem_lockfile {
+  /bin/rm ${lockfile}
+  if [ ! -e ${lockfile} ]; then
+    echo removed lockfile ${lockfile}
+  else
+    echo "[E]rror: couldn't remove lockfile!"
+    exit 1
+  fi
+}
+
+number=$1
+limit=$2
+dir=$3
+
+content=`/usr/local/symlinux/bin/getmbofdir.sh ${dir}` 
+date
+echo "content of ${dir} is currently ${content}MByte"
+if [[ ${content} -gt $limit ]];then 
+  todelete=`ls -t1 ${dir} | tail -n${number}`
+  echo "will delete ${todelete} in '$dir' in 5 seconds"
+  sleep 5
+  cd ${dir}
+  rm -rv $todelete
+else
+  echo "nothing to be done"
+fi
+
+# remove lockfile
+rem_lockfile
+
+echo done.
+
