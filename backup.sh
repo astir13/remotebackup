@@ -25,6 +25,7 @@ include=""
 exclude=""
 sshurl=""
 inc="0"
+clouddrive_dir="onedrive:backup"
 
 if [[ $# -lt $expectedArgs || $# -gt $expectedArgs ]]; then
   echo "usage: $0 {config file}"
@@ -64,6 +65,7 @@ function rem_lockfile {
 echo "[I]nfo: starting backup at `date`"
 
 # the config file shall exist
+# read all variables from the config file, these will overwrite defaults from above
 if [[ -e $1 ]]; then
   echo "[I]nfo: reading all variables from '$1'"
   source $1 # here all commands from the config file get executed
@@ -183,7 +185,7 @@ echo "[I]nfo: storing the archive under ${sshurl}:${targetdir}"
 # create space if needed, on remote host
 echo "[I]nfo: removing old files on remotehost, if needed:"
 echo "---"
-ssh ${sshurl} "(/usr/local/symlinux/bin/deloldest ${rm_num} ${space} ${targetdir} )"
+ssh ${sshurl} "(/usr/local/bin/deloldest ${rm_num} ${space} ${targetdir} )"
 echo "---"
 echo "[I]nfo: clean-up on remote host done. Starting backup and transfer on the fly:"
 if [[ $? -ne 0 ]]; then
@@ -201,15 +203,14 @@ if [[ $? -ne 0 ]]; then
 fi
 
 # upload the newly generated file to cloud service
-# customize your cloudservice and backup directory name here, if onedrive:backup doesn't fit
 retry=0
 while [[ $? -ne 0 && $retry -lt 5 || $retry -eq 0 ]]; do
   retry=$((retry + 1))
   echo "[I]nfo: retry number ${retry}"
-  ssh ${sshurl} "(/usr/local/symlinux/bin/rclone copy ${targetdir}/${tarname} onedrive:backup/${hostname}/)"
+  ssh ${sshurl} "(/usr/local/bin/rclone copy ${targetdir}/${tarname} ${clouddrive_dir}/${hostname}/)"
 done
 if [[ $? -ne 0 ]]; then
-  echo "[W]arning: transfer to dropbox failed, see output before this line."
+  echo "[W]arning: transfer to cloud drive failed, see output before this line."
 fi
 
 # finally note the increment in the snapcount file

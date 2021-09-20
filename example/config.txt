@@ -28,6 +28,12 @@ sshurl="backup@backuphost.domain"
 # the target directory to store the backup on the remote host
 targetdir="/backup/hostname1"
 
+# clouddrive
+# this string identifies the rclone clouddrive setup you prepared on the remote host
+# and the directory where all backups are found; by default, the backup script adds
+# the hostname to this base directory
+clouddrive_dir="onedrive:backup"
+
 # the diskspace in MB may use on targetdir for backups
 # this number triggers when the backup script will free up space on the
 # remote host's backup folder
