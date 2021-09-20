@@ -1,0 +1,7 @@
+/etc
+/tmp/installedpackages
+/tmp/db2_backup.sql
+/root
+/srv
+/usr/local/myrepos/
+/home/

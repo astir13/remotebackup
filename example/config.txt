@@ -1,0 +1,69 @@
+# the snapshot file which remembers the state and list of files since the 
+# increment 0 backup
+snapshot="/usr/local/myrepos/hosts/hostname1/backup/snapshot/backup.tarsnap"
+snapcount="/usr/local/myrepos/hosts/hostname1/backup/snapshot/snapcount"
+
+# list of folders or files to include in the backup
+include="/usr/local/myrepos/hosts/hostname1/backup/includes.txt"
+
+# list of files or patterns to exclude stored in this file
+exclude="/usr/local/myrepos/hosts/hostname1/backup/excludes.txt"
+
+# zip of archive enable/disable
+# shall be either "" or "z", nothing else!
+zip=""
+# zip="z"
+
+# the URL to use in SSH to connect to the remote host, replace backuphost.domain
+# with the hostname that allows ssh login for the backup user and has sufficient
+# storage to take (recommended) 2 full backups and 2 incremental cycles.
+# remember to cat your .ssh/id_rsa.pub into /home/username/.ssh/authorized_keys 
+# to avoid password prompting, this is not good in automatic backups.
+# see ssh-keygen for how to generate id_rsa.pub (use ssh-keygen -t rsa)
+# test password free login on the remote host by typing ssh username@backuphost.domain in a console
+# no password prompt should follow, you should be logged into the remote
+# host immediately.
+sshurl="backup@backuphost.domain"
+
+# the target directory to store the backup on the remote host
+targetdir="/backup/hostname1"
+
+# the diskspace in MB may use on targetdir for backups
+# this number triggers when the backup script will free up space on the
+# remote host's backup folder
+space=400
+
+# the number of oldest files to be deleted if backup targetdir space exceeds space defined above
+rm_num=2
+
+# tar extra attibutes 
+tarattribs="--xattrs --acls -v"
+#tarattribs=""
+
+# maximum age of increment 0 backup in days
+inc_max=7
+
+# space for some host specific commands
+# get the package list on a debian host and store it in order to faster be able 
+# to reestablish the host environment after a failure
+dpkg --get-selections | grep '[[:space:]]install'| awk '{print $1}' > /tmp/installedpackages
+if [[ $? -ne 0 ]]; then
+  echo "[F]atal: couldn't generate packet list of host. stopping."
+  rm /tmp/backup.lock
+  return 1
+fi
+
+# create database backup of a mariadb docker
+echo "[I]nfo: creating database dump."
+CURDIR=`pwd`
+cd /root/traefik
+docker-compose exec -T db2 /bin/bash -c '/usr/bin/mysqldump -R -p4KEZPwjiZVJvF70Y -ubakup  --all-databases --create-options' > /tmp/db2_backup.sql 2> /tmp/db2_backup.err
+if [[ $? -ne 0 ]]; then
+  echo "[F]atal: couldn't generate db2 database backup. stopping."
+  cat /tmp/db2_backup.err
+  cat /tmp/db2_backup.sql
+  rm /tmp/db2_backup.*
+  return 1
+fi
+cd ${CURDIR}
+
