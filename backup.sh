@@ -26,6 +26,7 @@ exclude=""
 sshurl=""
 inc="0"
 clouddrive_dir="onedrive:backup"
+keyfile=""
 
 if [[ $# -lt $expectedArgs || $# -gt $expectedArgs ]]; then
   echo "usage: $0 {config file}"
@@ -79,6 +80,15 @@ else
   rem_lockfile
   exit 1
 fi 
+
+# the keyfile name shall not be empty
+if [[ $keyfile != "" ]]; then
+  echo "[I]nfo: keyfile is '${keyfile}'"
+else
+  echo "[E]rror keyfile not defined in config, stopping."
+  rem_lockfile
+  exit 1
+fi
 
 # the snapshot file name shall not be empty
 if [[ $snapshot != "" ]]; then
@@ -195,7 +205,7 @@ if [[ $? -ne 0 ]]; then
 fi
 # tar compressed to a pipe into remote host folder (no space needed here)
 cd /
-tar c${zip}f - --listed-incremental ${snapshot} --exclude-from ${exclude} ${tarattribs} --exclude-vcs --files-from ${include} | openssl enc -aes-256-cbc -salt -pass file:/usr/local/symlinux/config/ssl/symlinux/backup/passwd.txt | ssh ${sshurl} "(cd ${targetdir}; cat - > ${tarname})"
+tar c${zip}f - --listed-incremental ${snapshot} --exclude-from ${exclude} ${tarattribs} --exclude-vcs --files-from ${include} | openssl enc -aes-256-cbc -salt -pass ${keyfile} | ssh ${sshurl} "(cd ${targetdir}; cat - > ${tarname})"
 if [[ $? -ne 0 ]]; then
   echo "[F]atal: tar, encrypt or transfer failed, see output before this line. stopping."
   rem_lockfile

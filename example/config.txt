@@ -28,6 +28,11 @@ sshurl="backup@backuphost.domain"
 # the target directory to store the backup on the remote host
 targetdir="/backup/hostname1"
 
+# the keyfile location on the remote host
+# this is just an example, you need to set it;
+# creation of a keyfile: use openssl rand -base64 4096
+keyfile="/home/backup/secret/backup_keyfile"
+
 # clouddrive
 # this string identifies the rclone clouddrive setup you prepared on the remote host
 # and the directory where all backups are found; by default, the backup script adds
