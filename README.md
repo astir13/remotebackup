@@ -17,6 +17,7 @@ take backup of a machine, based on a config file defining commands, include and 
 
 # what you need
 - the remote host, ideally a linux with ext. disk, i.e. raspberrypy + 1TB disk
+- the deloldest script in /usr/local/bin on the remotehost
 - rclone on the remote host
 - rclone configured for the backup user on the remote host
 - ssh configured for the backup user on the remote host
