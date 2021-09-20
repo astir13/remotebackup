@@ -23,3 +23,10 @@ take backup of a machine, based on a config file defining commands, include and 
 - ssh configured for the backup user on the remote host
 - ensured that ssh from the host to be backed up to the remotehost works without password (use standard authorized_keys file on the remote and follow guides on the network of how to setup SSH with authorized keys on the net)
 - a cloud storage account supported by rclone (many are)
+
+# how backup files are decrypted
+To decrypt the encrypted file, you just need 
+- the backup file
+- openssl 
+- the keyfile
+'''openssl enc -d -aes-256-cbc -in /tmp/backupfile.tgz.crypt -out /tmp/backupfile.tgz -pass'''
