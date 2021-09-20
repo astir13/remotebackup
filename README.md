@@ -18,7 +18,7 @@ take backup of a machine, based on a config file defining commands, include and 
 # what you need
 - the remote host, ideally a linux with ext. disk, i.e. raspberrypy + 1TB disk
 - the deloldest script in /usr/local/bin on the remotehost
-- rclone on the remote host
+- rclone in /usr/local/bin on the remote host (create a symbolical link to the executable)
 - rclone configured for the backup user on the remote host
 - ssh configured for the backup user on the remote host
 - ensured that ssh from the host to be backed up to the remotehost works without password (use standard authorized_keys file on the remote and follow guides on the network of how to setup SSH with authorized keys on the net)
