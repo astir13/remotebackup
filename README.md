@@ -29,4 +29,4 @@ To decrypt the encrypted file, you just need
 - the backup file
 - openssl 
 - the keyfile
-'''openssl enc -d -aes-256-cbc -in /tmp/backupfile.tgz.crypt -out /tmp/backupfile.tgz -pass'''
+`openssl enc -d -aes-256-cbc -in /tmp/backupfile.tgz.crypt -out /tmp/backupfile.tgz -pass`
