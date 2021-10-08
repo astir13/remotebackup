@@ -16,7 +16,7 @@ take backup of a machine, based on a config file defining commands, include and 
 - manage space on the remote host (delete older files on this backup cache)
 
 # what you need (requirements on your host)
-- the remote host, ideally a linux with ext. disk, i.e. raspberrypy + 1TB disk
+- the remote host, ideally a linux with ext. disk, i.e. raspberrypy + 1TB disk; can be the same host, if you do not have a small backup host in your setup
 - the deloldest script in /usr/local/bin on the remotehost
 - rclone in /usr/local/bin on the remote host (create a symbolical link to the executable)
 - rclone configured for the backup user on the remote host
