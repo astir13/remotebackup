@@ -1,7 +1,7 @@
 # remotebackup
 take backup of a machine, based on a config file defining commands, include and exclude files; build ecrypted backup file on remote machine; transfer to cloud service;
 
-# reqiurements
+# what it does (requirements on the software provided)
 - take backup of databases into file (like for MariaDB)
 - build a tar.gz file of the files/folders given in include.txt
 - encrypt on the fly
@@ -15,7 +15,7 @@ take backup of a machine, based on a config file defining commands, include and 
 - create incremental backups for n days (configurable), to avoid using full size backup every day
 - manage space on the remote host (delete older files on this backup cache)
 
-# what you need
+# what you need (requirements on your host)
 - the remote host, ideally a linux with ext. disk, i.e. raspberrypy + 1TB disk
 - the deloldest script in /usr/local/bin on the remotehost
 - rclone in /usr/local/bin on the remote host (create a symbolical link to the executable)
