@@ -28,5 +28,5 @@ take backup of a machine, based on a config file defining commands, include and 
 To decrypt the encrypted file, you just need 
 - the backup file
 - openssl 
-- the keyfile
-`openssl enc -d -aes-256-cbc -in /tmp/backupfile.tgz.crypt -out /tmp/backupfile.tgz -pass`
+- the complete path to the keyfile (example file locations need to be corrected below)
+`openssl enc -d -aes-256-ctr -in /tmp/backupfile.tgz.crypt -out /tmp/backupfile.tgz -pass file:/etc/remotebackup/keyfile`
