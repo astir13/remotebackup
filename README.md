@@ -30,4 +30,5 @@ To decrypt the encrypted file, you just need
 - the backup file
 - openssl 
 - the keyfile
-`openssl enc -d -aes-256-cbc -in /tmp/backupfile.tgz.crypt -out /tmp/backupfile.tgz -pass`
+- example command (you need to change the filenames for keyfile, crypted input and uncrypted output file)
+`openssl enc -d -aes-256-ctr -pbkdf2 -pass file:keyfile -in backup.tar.crypt -out backup.tar`
