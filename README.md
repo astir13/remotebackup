@@ -16,17 +16,19 @@ take backup of a machine, based on a config file defining commands, include and 
 - manage space on the remote host (delete older files on this backup cache)
 
 # what you need (requirements on your host)
-- the remote host, ideally a linux with ext. disk, i.e. raspberrypy + 1TB disk
+- the remote host, ideally a linux with ext. disk, i.e. raspberrypy + 1TB disk; can be the same host, if you do not have a small backup host in your setup
 - the deloldest script in /usr/local/bin on the remotehost
 - rclone in /usr/local/bin on the remote host (create a symbolical link to the executable)
 - rclone configured for the backup user on the remote host
 - ssh configured for the backup user on the remote host
 - ensured that ssh from the host to be backed up to the remotehost works without password (use standard authorized_keys file on the remote and follow guides on the network of how to setup SSH with authorized keys on the net)
 - a cloud storage account supported by rclone (many are)
+- having mailx installed on the host to be backed up: for sending emails in case errors happen
 
 # how backup files are decrypted
 To decrypt the encrypted file, you just need 
 - the backup file
 - openssl 
-- the complete path to the keyfile (example file locations need to be corrected below)
-`openssl enc -d -aes-256-ctr -in /tmp/backupfile.tgz.crypt -out /tmp/backupfile.tgz -pass file:/etc/remotebackup/keyfile`
+- the keyfile
+- example command (you need to change the filenames for keyfile, crypted input and uncrypted output file)
+`openssl enc -d -aes-256-ctr -pbkdf2 -pass file:keyfile -in backup.tar.crypt -out backup.tar`
