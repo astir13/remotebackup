@@ -1,0 +1,1 @@
+12 23 * * *	root 	nice -n 19 /usr/local/remotebackup/backup.sh /etc/remotebackup/config.txt >> /var/log/remotebackup.log 2>&1

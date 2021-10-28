@@ -27,6 +27,8 @@ sshurl=""
 inc="0"
 clouddrive_dir="onedrive:backup"
 keyfile=""
+installdir="/usr/local/remotebackup"
+enc_cipher="aes-256-ctr"
 
 if [[ $# -lt $expectedArgs || $# -gt $expectedArgs ]]; then
   echo "usage: $0 {config file}"
@@ -195,7 +197,7 @@ echo "[I]nfo: storing the archive under ${sshurl}:${targetdir}"
 # create space if needed, on remote host
 echo "[I]nfo: removing old files on remotehost, if needed:"
 echo "---"
-ssh ${sshurl} "(/usr/local/bin/deloldest ${rm_num} ${space} ${targetdir} )"
+ssh ${sshurl} "(${installdir}/deloldest ${rm_num} ${space} ${targetdir} )"
 echo "---"
 echo "[I]nfo: clean-up on remote host done. Starting backup and transfer on the fly:"
 if [[ $? -ne 0 ]]; then
@@ -205,7 +207,7 @@ if [[ $? -ne 0 ]]; then
 fi
 # tar compressed to a pipe into remote host folder (no space needed here)
 cd /
-tar c${zip}f - --listed-incremental ${snapshot} --exclude-from ${exclude} ${tarattribs} --exclude-vcs --files-from ${include} | openssl enc -aes-256-cbc -salt -pass ${keyfile} | ssh ${sshurl} "(cd ${targetdir}; cat - > ${tarname})"
+tar c${zip}f - --listed-incremental ${snapshot} --exclude-from ${exclude} ${tarattribs} --exclude-vcs --files-from ${include} | openssl enc -${enc_cipher} -pbkdf2 -salt -pass file:${keyfile} | ssh ${sshurl} "(cd ${targetdir}; cat - > ${tarname})"
 if [[ $? -ne 0 ]]; then
   echo "[F]atal: tar, encrypt or transfer failed, see output before this line. stopping."
   rem_lockfile
