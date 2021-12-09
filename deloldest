@@ -36,7 +36,7 @@ number=$1
 limit=$2
 dir=$3
 
-content=`/usr/local/symlinux/bin/getmbofdir.sh ${dir}` 
+content=`du -ms ${dir} | grep -o "^[0-9]\+"` 
 date
 echo "content of ${dir} is currently ${content}MByte"
 if [[ ${content} -gt $limit ]];then 
