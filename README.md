@@ -25,6 +25,14 @@ take backup of a machine, based on a config file defining commands, include and 
 - a cloud storage account supported by rclone (many are)
 - having mailx installed on the host to be backed up: for sending emails in case errors happen
 
+# installation
+- clone the repository into /usr/local
+- go to /etc/cron.d and run 'ln -s /usr/local/remotebackup/remoteback.cron ./remotebackup'
+- mkdir /etc/remotebackup
+- cp all files from /usr/local/remotebackup/example to /etc/remotebackup
+- edit these files for your configuration
+- run the first backup manually to see if all runs right by calling the exact command as given in the remoteback.cron file
+
 # how backup files are decrypted
 To decrypt the encrypted file, you just need 
 - the backup file
